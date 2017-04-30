@@ -50,6 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText searchBar;
 
     public final static int REQUEST_PERMISSION_GPS = 1;
+    public final static String TAG = "style";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,7 +187,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void styleReady(GoogleMap googleMap) {
-        String TAG = "style";
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
