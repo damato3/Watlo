@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">WatLo</string>
-    <string name="title_activity_maps">Map</string>
+
+    <string name="map_search">Search</string>
+
+    <string name="btn_ok">Ok</string>
+
+    <string name="permission_gps_denied">Please provide the GPS permission</string>
 </resources>
