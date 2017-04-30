@@ -10,21 +10,10 @@
   },
   {
     "featureType": "administrative.country",
-    "stylers": [
-      {
-        "visibility": "on"
-      },
-      {
-        "weight": 8
-      }
-    ]
-  },
-  {
-    "featureType": "administrative.country",
     "elementType": "labels",
     "stylers": [
       {
-        "visibility": "off"
+        "visibility": "simplified"
       }
     ]
   },
@@ -42,7 +31,7 @@
     "elementType": "labels",
     "stylers": [
       {
-        "visibility": "off"
+        "visibility": "simplified"
       }
     ]
   },
@@ -148,7 +137,10 @@
     "featureType": "road.arterial",
     "stylers": [
       {
-        "visibility": "off"
+        "color": "#f7f7f7"
+      },
+      {
+        "visibility": "simplified"
       }
     ]
   },
@@ -165,7 +157,10 @@
     "featureType": "road.local",
     "stylers": [
       {
-        "visibility": "off"
+        "color": "#e2e2e2"
+      },
+      {
+        "visibility": "simplified"
       }
     ]
   },
@@ -208,13 +203,13 @@
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#586de2"
+        "color": "#475fe0"
       },
       {
-        "saturation": -5
+        "saturation": 10
       },
       {
-        "lightness": 25
+        "lightness": 30
       },
       {
         "visibility": "on"
@@ -223,10 +218,55 @@
   },
   {
     "featureType": "water",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#697be4"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
     "elementType": "labels.text",
     "stylers": [
       {
+        "color": "#000000"
+      },
+      {
+        "lightness": 5
+      },
+      {
         "visibility": "on"
+      },
+      {
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "saturation": 100
+      },
+      {
+        "visibility": "on"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#ecec00"
+      },
+      {
+        "saturation": 100
+      },
+      {
+        "weight": 8
       }
     ]
   }
