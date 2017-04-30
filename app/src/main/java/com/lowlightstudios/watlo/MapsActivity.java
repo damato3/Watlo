@@ -3,21 +3,18 @@ package com.lowlightstudios.watlo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Build;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.res.Resources;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -31,9 +28,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.lowlightstudios.watlo.Custom.DottedRadius;
+import com.lowlightstudios.watlo.core.Utils;
 
 
 import java.io.IOException;
@@ -47,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public final static int REQUEST_PERMISSION_GPS = 1;
     public final static String TAG = "style";
+    DottedRadius dottedRadius;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         mapView = mapFragment.getView();
+        dottedRadius = (DottedRadius) findViewById(R.id.dotted_circle);
 
         searchBar = (EditText) findViewById(R.id.search_bar);
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -107,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Address address = addressList.get(0);
             LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
             mMap.addMarker(new MarkerOptions().position(latLng).title("Marker").icon(BitmapDescriptorFactory.
-                    fromBitmap(getBitmapFromVectorDrawable(this, R.drawable.ic_waterdrop))));
+                    fromBitmap(Utils.getBitmapFromVectorDrawable(this, R.drawable.ic_waterdrop))));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
 
             InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -136,6 +138,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         styleReady(mMap);
     }
 
+    /**
+     * @return distance in meters from center of circle to a point on the circle
+     */
+    public double getSearchRadius() {
+        //Google Map LatLng objects must be converted to android Location objects
+        //in order to use distanceTo()
+
+        Point circlePoint = getScreenCenter();
+        circlePoint.x = circlePoint.x - (int) dottedRadius.getCircleRadius();
+
+        Point centerPoint = getScreenCenter();
+
+        LatLng centerLatLng = mMap.getProjection().fromScreenLocation(centerPoint);
+        Location center = new Location("");
+        center.setLatitude(centerLatLng.latitude);
+        center.setLongitude(centerLatLng.longitude);
+
+
+        LatLng circleLatLng = mMap.getProjection().fromScreenLocation(circlePoint);
+        Location circlePointLocation = new Location("");
+        circlePointLocation.setLatitude(circleLatLng.latitude);
+        circlePointLocation.setLongitude(circleLatLng.longitude);
+
+        return center.distanceTo(circlePointLocation);
+
+    }
+
+    private Point getScreenCenter() {
+        return new Point(this.getResources().getDisplayMetrics().widthPixels,
+                this.getResources().getDisplayMetrics().heightPixels);
+    }
+
     @SuppressWarnings("MissingPermission")
     private void initMap() {
         if (mMap != null) {
@@ -152,21 +186,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 30, 160);
         }
-    }
-
-    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, drawableId);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
     }
 
     public void styleReady(GoogleMap googleMap) {
