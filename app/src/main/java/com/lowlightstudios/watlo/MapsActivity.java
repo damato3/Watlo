@@ -13,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.content.res.Resources;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatDrawableManager;
@@ -31,6 +33,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.MapStyleOptions;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -42,6 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText searchBar;
 
     public final static int REQUEST_PERMISSION_GPS = 1;
+    public final static String TAG = "style";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         initMap();
+        styleReady(mMap);
     }
 
     @SuppressWarnings("MissingPermission")
@@ -161,5 +167,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+    public void styleReady(GoogleMap googleMap) {
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+
     }
 }
