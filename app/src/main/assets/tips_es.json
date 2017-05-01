@@ -1,0 +1,65 @@
+[
+  {
+    "id":1,
+    "title":"Evite utilizar jabones antibacteriales o productos de limpieza.",
+    "image_path":"tip-1.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"La mayoría de estos contienen trichlosan, un pesticida registrado que se ha encontrado para dañar la vida acuática. La American Medical Association advierte que nuestro uso de agentes antibacterianos puede conducir a "superbacterias" que serán resistentes a los antibióticos. El jabón y el agua regulares matan los gérmenes con la misma eficacia."
+  },
+  {
+    "id":2,
+    "title":"Nunca arroje medicamentos no deseados o expirados en el inodoro o en el desagüe",
+    "image_path":"tip-2.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Averigüe si su ciudad tiene un sitio o programa para recolectar productos farmacéuticos no deseados. Si no, remueva todas las etiquetas y envuelva los productos antes de desecharlos en la basura. Si es posible, vierta agua o vinagre en la botella para destruir las píldoras y hacerlas inaccesibles a los niños."
+  },
+  {
+    "id":3,
+    "title":"No ponga nada excepto el agua por los desagües pluviales",
+    "image_path":"tip-3.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Estos desagües llevan agua de lluvia a nuestras playas y mares. El aceite de motor usado, los detergentes, los fertilizantes para césped, los pesticidas y otros contaminantes son llevados por las aguas pluviales a las vías fluviales locales y causan daño innecesario."
+  },
+  {
+    "id":4,
+    "title":"Solucione las fugas de su auto y ponga un revestimiento en la entrada de autos para recoger el aceite y otros materiales",
+    "image_path":"tip-4.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Estas fugas y goteos contribuyen a la contaminación de las aguas pluviales."
+  },
+  {
+    "id":5,
+    "title":"Evite el uso de pesticidas o fertilizantes químicos",
+    "image_path":"tip-5.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Ellos representan una seria amenaza para su salud y seguridad, a la vez que contaminan el agua subterránea y de la superficie."
+  },
+  {
+    "id":6,
+    "title":"Elija productos domésticos no tóxicos siempre que sea posible",
+    "image_path":"tip-6.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"La mejor manera de evitar contaminar es usar productos que no son peligrosos para el medio ambiente en primer lugar."
+  },
+  {
+    "id":7,
+    "title":"Recojer los desechos de sus mascotas",
+    "image_path":"tip-7.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Al igual que otros contaminantes, los desechos de mascotas pueden correr a través de los desagües pluviales, propagando bacterias."
+  },
+  {
+    "id":8,
+    "title":"No pavimentar su propiedad",
+    "image_path":"tip-8.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Cuanto más pavimento haya, más agua de lluvia saldrá corriendo por los desagües, recogiendo contaminantes en el camino y causando inundaciones. Permitir que el agua se sumerja en el suelo puede prevenir inundaciones, recarga de agua subterránea y contaminantes diluidos. Plantar plantas nativas que no requieren mucha agua también ayuda a ahorrar nuestros preciosos suministros."
+  },
+  {
+    "id":9,
+    "title":"Difundir la palabra y ser un defensor del agua",
+    "image_path":"tip-9.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Habla con tus vecinos sobre cómo ellos pueden ayudar también, trabajen en conjunto con sus represnetantes para asegurarse de que los pesticidas, antibacterianos y otros productos tóxicos no se utilicen en las escuelas, parques y otras áreas públicas."
+  }
+]
