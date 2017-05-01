@@ -19,7 +19,7 @@ Source Code/Project URL: https://github.com/damato3/Watlo
 
 # RESOURCES
 
-
+- Where is the water challenge: https://2017.spaceappschallenge.org/challenges/planetary-blues/wheres-water/details
 - USGS Water Data for the Nation API - https://waterdata.usgs.gov/nwis/gw
 - Water information - https://conserve2enhance.org/know-your-water
 - NASA Water News and API - https://www.nasa.gov/subject/3135/water
