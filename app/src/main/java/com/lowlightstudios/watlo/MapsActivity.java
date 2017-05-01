@@ -9,9 +9,12 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.content.res.Resources;
 import android.support.v7.app.AlertDialog;
@@ -20,9 +23,13 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -33,21 +40,36 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.lowlightstudios.watlo.Custom.DottedRadius;
+import com.lowlightstudios.watlo.Custom.InfoCardsAdapter;
 import com.lowlightstudios.watlo.core.Utils;
+import com.lowlightstudios.watlo.models.InfoCard;
+import com.lowlightstudios.watlo.services.WaterService;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
+        GoogleMap.OnCameraIdleListener, WaterService.ServiceResponse {
 
     private GoogleMap mMap;
+    private GoogleApiClient googleApiClient;
+    private Location currentLocation;
     private View mapView;
     private EditText searchBar;
 
     public final static int REQUEST_PERMISSION_GPS = 1;
+    public final static int REQUEST_PERMISSION_LOCATION = 2;
     public final static String TAG = "style";
-    DottedRadius dottedRadius;
+    private DottedRadius dottedRadius;
+
+    private RecyclerView infoCardsRecycler;
+    private InfoCardsAdapter infoCardsAdapter;
+
+    private WaterService waterService;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +79,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //Initializing googleApiClient
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
 
         mapView = mapFragment.getView();
         dottedRadius = (DottedRadius) findViewById(R.id.dotted_circle);
@@ -72,6 +101,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return false;
             }
         });
+
+        //RecyclerView
+        infoCardsRecycler = (RecyclerView) findViewById(R.id.info_cards_recycler);
+        infoCardsRecycler.setHasFixedSize(true);
+
+        infoCardsAdapter = new InfoCardsAdapter(this);
+        infoCardsRecycler.setAdapter(infoCardsAdapter);
+
+        //Layout manager for the Recycler View
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        infoCardsRecycler.setLayoutManager(mLayoutManager);
+
+        progressBar = (ProgressBar) findViewById(R.id.loading_water);
+
+        waterService = new WaterService(this, this);
     }
 
     @Override
@@ -91,30 +135,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             })
                             .show();
                 }
+                break;
+            case REQUEST_PERMISSION_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getMyLocation();
+                }
+                break;
         }
     }
 
-    public void onMapSearch() {
-        String location = searchBar.getText().toString();
-        List<Address> addressList = null;
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
 
-        if (!location.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
+    }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Address address = addressList.get(0);
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(latLng).title("Marker").icon(BitmapDescriptorFactory.
-                    fromBitmap(Utils.getBitmapFromVectorDrawable(this, R.drawable.ic_waterdrop))));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+    @Override
+    public void onConnectionSuspended(int i) {
 
-            InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
-        }
+    }
+
+    @Override
+    public void onCameraIdle() {
+        getPoints();
+    }
+
+    @Override
+    public void onResponseComplete(int codeResult) {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoadedNews(InfoCard infoCard) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     /**
@@ -135,45 +192,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         initMap();
-        styleReady(mMap);
-    }
-
-    /**
-     * @return distance in meters from center of circle to a point on the circle
-     */
-    public double getSearchRadius() {
-        //Google Map LatLng objects must be converted to android Location objects
-        //in order to use distanceTo()
-
-        Point circlePoint = getScreenCenter();
-        circlePoint.x = circlePoint.x - (int) dottedRadius.getCircleRadius();
-
-        Point centerPoint = getScreenCenter();
-
-        LatLng centerLatLng = mMap.getProjection().fromScreenLocation(centerPoint);
-        Location center = new Location("");
-        center.setLatitude(centerLatLng.latitude);
-        center.setLongitude(centerLatLng.longitude);
-
-
-        LatLng circleLatLng = mMap.getProjection().fromScreenLocation(circlePoint);
-        Location circlePointLocation = new Location("");
-        circlePointLocation.setLatitude(circleLatLng.latitude);
-        circlePointLocation.setLongitude(circleLatLng.longitude);
-
-        return center.distanceTo(circlePointLocation);
-
-    }
-
-    private Point getScreenCenter() {
-        return new Point(this.getResources().getDisplayMetrics().widthPixels,
-                this.getResources().getDisplayMetrics().heightPixels);
     }
 
     @SuppressWarnings("MissingPermission")
     private void initMap() {
         if (mMap != null) {
+            mMap.clear();
             mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMapToolbarEnabled(false);
+
+            // Default location to New York.
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(40.825774, -73.858294), 8));
+            mMap.setOnCameraIdleListener(this);
+
+            styleReady(mMap);
         }
         if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
             // Get the button view
@@ -203,5 +235,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e(TAG, "Can't find style. Error: ", e);
         }
 
+    }
+
+    private void getMyLocation() {
+        mMap.clear();
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_GPS);
+            return;
+        }
+        currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+    }
+
+    public void onMapSearch() {
+        String location = searchBar.getText().toString();
+        List<Address> addressList = null;
+
+        if (!location.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Address address = addressList.get(0);
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(latLng).title("Marker").icon(BitmapDescriptorFactory.
+                    fromBitmap(Utils.getBitmapFromVectorDrawable(this, R.drawable.ic_waterdrop))));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+            InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
+        }
+    }
+
+    public void getPoints() {
+        progressBar.setVisibility(View.VISIBLE);
+        float radius = dottedRadius.getCircleRadius();
+        LatLng circlePoint = mMap.getCameraPosition().target;
+        Point screenLoc = mMap.getProjection().toScreenLocation(circlePoint);
+
+        int startXPosition = screenLoc.x;
+        int positiveXCoordenate = screenLoc.x + (int) radius;
+        int negativeXCoordenate = screenLoc.x - (int) radius;
+        int positiveYCoordenate = screenLoc.y - (int) radius;
+        int negativeYCoordenate = screenLoc.y + (int) radius;
+
+        screenLoc.x = positiveXCoordenate;
+        LatLng positiveX = mMap.getProjection().fromScreenLocation(screenLoc);
+        screenLoc.x = negativeXCoordenate;
+        LatLng negativeX = mMap.getProjection().fromScreenLocation(screenLoc);
+        screenLoc.x = startXPosition;
+        screenLoc.y = positiveYCoordenate;
+        LatLng positiveY = mMap.getProjection().fromScreenLocation(screenLoc);
+        screenLoc.y = negativeYCoordenate;
+        LatLng negativeY = mMap.getProjection().fromScreenLocation(screenLoc);
+
+        waterService.requestGroundWater(negativeX.longitude, negativeX.latitude, positiveY.longitude, positiveY.latitude);
     }
 }

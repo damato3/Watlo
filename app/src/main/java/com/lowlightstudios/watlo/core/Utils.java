@@ -14,6 +14,11 @@ import android.support.v7.widget.AppCompatDrawableManager;
  */
 
 public class Utils {
+    public final static int GROUND_WATER_RESULT = 10;
+    public final static int NEWS_WATER_RESULT = 11;
+    public final static int NEWS_WATER_NODE = 12;
+
+
     public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
         Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, drawableId);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

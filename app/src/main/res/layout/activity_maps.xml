@@ -1,62 +1,85 @@
-<RelativeLayout
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.lowlightstudios.watlo.MapsActivity" />
-
-    <com.lowlightstudios.watlo.Custom.DottedRadius
-        android:id="@+id/dotted_circle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        radius="50"
-        circleColor="@color/colorPrimary"
-        tools:context="com.lowlightstudios.watlo.MapsActivity"/>
-
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:umanoPanelHeight="48dp"
+    sothree:umanoOverlay="true"
+    sothree:umanoShadowHeight="0dp">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="5dp">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-        <EditText
-            android:id="@+id/search_bar"
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:hint="@string/map_search"
-            android:maxLines="1"
-            android:imeOptions="actionGo"
-            android:inputType="text"
-            android:paddingStart="62dp"
-            android:paddingEnd="5dp"
-            android:background="@android:drawable/editbox_background_normal"
-            android:layout_height="56dp" />
+            android:layout_height="match_parent"
+            tools:context="com.lowlightstudios.watlo.MapsActivity" />
 
-        <ImageButton
-            android:id="@+id/button1"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:src="@drawable/ic_settings_black_24px"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
+        <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:id="@+id/loading_water"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-8dp"
+            android:visibility="gone"
+            android:indeterminate="true" />
+
+        <com.lowlightstudios.watlo.Custom.DottedRadius
+            android:id="@+id/dotted_circle"
+            circleColor="@color/colorPrimary"
+            radius="50"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            tools:context="com.lowlightstudios.watlo.MapsActivity" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_marginStart="5dp"
-            android:padding="5dp" />
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
 
+            <EditText
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:hint="@string/map_search"
+                android:imeOptions="actionGo"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingEnd="5dp"
+                android:paddingStart="62dp" />
+
+            <ImageButton
+                android:id="@+id/button1"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_settings_black_24px" />
+        </RelativeLayout>
     </RelativeLayout>
 
-</RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/info_cards_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

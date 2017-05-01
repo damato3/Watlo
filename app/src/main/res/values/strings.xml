@@ -6,4 +6,10 @@
     <string name="btn_ok">Ok</string>
 
     <string name="permission_gps_denied">Please provide the GPS permission</string>
+    
+    <string name="groundwater_host">waterservices.usgs.gov</string>
+
+    <string name="nasa_host">www.nasa.gov</string>
+    <string name="nasa_news_latest_api">api/1/query/latest</string>
+    <string name="nasa_news_water_api">api/1/query/ubernodes.json</string>
 </resources>

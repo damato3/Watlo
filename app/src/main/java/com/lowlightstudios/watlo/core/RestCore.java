@@ -30,20 +30,30 @@ public class RestCore {
     public static final String _POST = "post";
 
     private String host;
+    private String scheme;
 
     private OkHttpClient httpClient;
     private MediaType mediaType;
     private RestCoreJob restCoreJob;
     private RestCoreAsync restCoreAsync;
 
+    public RestCore(Object classContext) {
+        setup(classContext);
+    }
+
     public RestCore(Object classContext, String host) {
+        setup(classContext);
+        this.host = host;
+    }
+
+    private void setup(Object classContext) {
         if (classContext instanceof RestCoreJob) {
             this.restCoreJob = (RestCoreJob) classContext;
         } else {
             throw new RuntimeException(classContext.toString()
                     + " must implement RestCoreJob");
         }
-        this.host = host;
+        this.scheme = "http";
         this.httpClient = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
@@ -58,6 +68,14 @@ public class RestCore {
 
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public String getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
     }
 
     public void httpGet(String url, int codeResult) {
@@ -79,6 +97,12 @@ public class RestCore {
         restCoreAsync.execute(restCore);
     }
 
+    public void cancel() {
+        if (restCoreAsync != null) {
+            restCoreAsync.cancel(true);
+        }
+    }
+
     private class RestCoreAsync extends AsyncTask<RestCoreRequest, Void, RestCoreRequest> {
 
         @Override
@@ -88,7 +112,7 @@ public class RestCore {
             switch(restCore[0].getMethod()) {
                 case _GET:
                     HttpUrl.Builder builder = new HttpUrl.Builder();
-                    builder.scheme("http");
+                    builder.scheme(getScheme());
                     builder.host(getHost());
                     builder.addPathSegments(restCore[0].getUrl());
                     if (restCore[0].getQueryParams() != null) {
