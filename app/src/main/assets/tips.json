@@ -1,0 +1,65 @@
+[
+  {
+    "id":1,
+    "title":"Don’t use antibacterial soaps or cleaning products.",
+    "image_path":"tip-1.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Most of these contain trichlosan, a registered pesticide that has been found to harm aquatic life. The American Medical Association warns that our use of antibacterial agents may lead to “superbugs” that will be antibiotic resistant. Regular soap and water kills germs just as effectively."
+  },
+  {
+    "id":2,
+    "title":"Never flush unwanted or out-of-date medicines down the toilet or the drain",
+    "image_path":"tip-2.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Find out if your county or city has a site or program to collect unwanted pharmaceuticals. If not, remove all labels and wrap the products up before disposing in the garbage. If possible, pour water or vinegar in the bottle to destroy pills and make them inaccessible to children."
+  },
+  {
+    "id":3,
+    "title":"Don’t put anything except water down storm drains",
+    "image_path":"tip-3.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"These drains carry storm water to our local waterways. Used motor oil, detergents, lawn fertilizers, pesticides, and other contaminants get carried by stormwater to local waterways and cause unnecessary harm."
+  },
+  {
+    "id":4,
+    "title":"Fix leaks that drip from your car and put down a liner in your driveway to collect oil and other materials",
+    "image_path":"tip-4.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"These leaks and drips contribute to stormwater pollution."
+  },
+  {
+    "id":5,
+    "title":"Avoid using pesticides or chemical fertilizers",
+    "image_path":"tip-5.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"They pose a serious threat to your health and safety and they pollute both ground and surface water."
+  },
+  {
+    "id":6,
+    "title":"Choose non-toxic household products whenever possible",
+    "image_path":"tip-6.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"The best way to keep from polluting is to use products that are not dangerous to the environment in the first place."
+  },
+  {
+    "id":7,
+    "title":"Pick up after your pets",
+    "image_path":"tip-7.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Like other contaminants, pet waste can run down the storm drains, spreading bacteria."
+  },
+  {
+    "id":8,
+    "title":"Don’t pave your property",
+    "image_path":"tip-8.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"The more pavement there is, the more rain water will simply run off down the storm drains, picking up pollutants on the way and causing flooding. Allowing water to soak into the ground can prevent flooding, recharge groundwater supplies, and dilute contaminants. Planting native plants that do not require much water also helps save our precious supplies."
+  },
+  {
+    "id":9,
+    "title":"Spread the word and be a water advocate",
+    "image_path":"tip-9.png",
+    "source": "http://www.cleanwateraction.org",
+    "description":"Talk to your neighbors about how they can help too, and work with your local elected officials to ensure that pesticides, antibacterials, and other toxic chemicals are not used at schools, local parks, and other public areas. Attend your local water district meeting and tell your political leaders and water agencies to support local, state, and national policies that conserve water and stop pollution."
+  }
+]
